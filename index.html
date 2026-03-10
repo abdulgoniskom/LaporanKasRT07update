@@ -1,9 +1,9 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>Dashboard Kas RT</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -26,7 +26,7 @@ text-align:center;
 }
 
 .container{
-max-width:1000px;
+max-width:1100px;
 margin:auto;
 padding:20px;
 }
@@ -43,9 +43,11 @@ button{
 background:#2f80ed;
 color:white;
 border:none;
-padding:8px 12px;
-border-radius:5px;
+padding:10px 14px;
+border-radius:6px;
 cursor:pointer;
+margin:4px;
+font-weight:bold;
 }
 
 .logout{
@@ -54,12 +56,13 @@ background:red;
 
 .formInput{
 display:none;
+margin-top:10px;
 }
 
 table{
 border-collapse:collapse;
 width:100%;
-min-width:650px;
+min-width:700px;
 }
 
 th{
@@ -84,6 +87,13 @@ color:red;
 font-weight:bold;
 }
 
+.toolbar{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:10px;
+}
+
 </style>
 
 </head>
@@ -91,12 +101,14 @@ font-weight:bold;
 <body>
 
 <header>
-<h2>Kas RT 07 Bumi Indah Citty</h2>
+<h2>Kas RT 07 Bumi Indah City</h2>
 </header>
 
 <div class="container">
 
 <div class="card">
+
+<div class="toolbar">
 
 <select id="sheet" onchange="loadData()">
 <option value="Kas_RT">Kas RT</option>
@@ -119,7 +131,9 @@ font-weight:bold;
 <option value="12">Desember</option>
 </select>
 
-<button onclick="cetakPDF()">Cetak PDF</button>
+<button onclick="cetakPDF()">🧾 Cetak PDF</button>
+
+</div>
 
 <h3 id="saldo">Saldo : Rp 0</h3>
 
@@ -130,9 +144,7 @@ font-weight:bold;
 
 </div>
 
-</div>
-
-<div class="card formInput" id="formInput">
+<div class="formInput" id="formInput">
 
 <h3>Input Transaksi</h3>
 
@@ -143,6 +155,8 @@ font-weight:bold;
 <input type="text" id="bukti" placeholder="Link Bukti">
 
 <button onclick="simpan()">Simpan</button>
+
+</div>
 
 </div>
 
@@ -181,7 +195,6 @@ font-weight:bold;
 
 const API="https://script.google.com/macros/s/AKfycbxA1WFwM45lBSZMnEx87w53x8IVv-nOYUNRfaHZSuGLsuDgfIUlxhxq5UOqz7XafXk/exec";
 
-let admin=false;
 let chart;
 
 function rupiah(angka){
@@ -199,8 +212,6 @@ let p=prompt("Password");
 
 if(u=="admin" && p=="12345"){
 
-admin=true;
-
 document.getElementById("formInput").style.display="block";
 document.getElementById("loginBtn").style.display="none";
 document.getElementById("logoutBtn").style.display="inline";
@@ -214,8 +225,6 @@ alert("Login gagal");
 }
 
 document.getElementById("logoutBtn").onclick=function(){
-
-admin=false;
 
 document.getElementById("formInput").style.display="none";
 document.getElementById("loginBtn").style.display="inline";
@@ -255,14 +264,12 @@ let tgl=new Date(d.tanggal).toLocaleDateString("id-ID");
 html+=`
 
 <tr>
-
 <td>${tgl}</td>
 <td>${d.keterangan}</td>
 <td class="masuk">${rupiah(d.masuk)}</td>
 <td class="keluar">${rupiah(d.keluar)}</td>
 <td>${d.bukti ? `<a href="${d.bukti}" target="_blank">Lihat</a>` : "-"}</td>
 <td>${rupiah(saldo)}</td>
-
 </tr>
 
 `;
@@ -322,12 +329,6 @@ alert("Data tersimpan");
 
 loadData();
 
-document.getElementById("tanggal").value="";
-document.getElementById("ket").value="";
-document.getElementById("masuk").value="";
-document.getElementById("keluar").value="";
-document.getElementById("bukti").value="";
-
 });
 
 }
@@ -339,18 +340,10 @@ const { jsPDF } = window.jspdf;
 let doc=new jsPDF();
 
 let rows=[];
-let totalMasuk=0;
-let totalKeluar=0;
 
 document.querySelectorAll("#tabel tr").forEach(tr=>{
 
 let td=tr.querySelectorAll("td");
-
-let masuk=td[2].innerText.replace(/[^0-9]/g,"");
-let keluar=td[3].innerText.replace(/[^0-9]/g,"");
-
-totalMasuk+=Number(masuk);
-totalKeluar+=Number(keluar);
 
 rows.push([
 td[0].innerText,
@@ -362,26 +355,13 @@ td[5].innerText
 
 });
 
-doc.setFontSize(18);
-doc.text("LAPORAN KAS RT 07",105,20,{align:"center"});
-
-doc.setFontSize(11);
-doc.text("Tanggal Cetak : "+new Date().toLocaleDateString("id-ID"),14,30);
+doc.text("Laporan Kas RT",105,20,{align:"center"});
 
 doc.autoTable({
-startY:40,
+startY:30,
 head:[["Tanggal","Keterangan","Masuk","Keluar","Saldo"]],
 body:rows
 });
-
-let y=doc.lastAutoTable.finalY+10;
-
-doc.text("Total Pemasukan : Rp "+totalMasuk.toLocaleString("id-ID"),14,y);
-doc.text("Total Pengeluaran : Rp "+totalKeluar.toLocaleString("id-ID"),14,y+6);
-
-let saldo=totalMasuk-totalKeluar;
-
-doc.text("Saldo Akhir : Rp "+saldo.toLocaleString("id-ID"),14,y+12);
 
 doc.save("Laporan_Kas_RT.pdf");
 
@@ -393,3 +373,4 @@ loadData();
 
 </body>
 </html>
+```
