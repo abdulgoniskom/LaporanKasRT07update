@@ -335,10 +335,16 @@ loadData();
 function cetakPDF(){
 
 const { jsPDF } = window.jspdf;
+
+if(!jsPDF){
+alert("Library PDF belum terbaca");
+return;
+}
+
 let doc = new jsPDF();
 
-let kas = document.getElementById("pilihKas").selectedOptions[0].text;
-let bulan = document.getElementById("filterBulan").selectedOptions[0].text;
+let kas = document.getElementById("pilihKas")?.selectedOptions[0]?.text || "";
+let bulan = document.getElementById("filterBulan")?.selectedOptions[0]?.text || "";
 
 let totalMasuk=0;
 let totalKeluar=0;
@@ -357,7 +363,7 @@ let rows=[];
 document.querySelectorAll("#tabelKas tr").forEach(tr=>{
 
 let td = tr.querySelectorAll("td");
-if(td.length<5) return;
+if(td.length < 5) return;
 
 let masuk = td[2].innerText.replace(/[^0-9]/g,"");
 let keluar = td[3].innerText.replace(/[^0-9]/g,"");
@@ -380,12 +386,7 @@ startY:60,
 head:[["Tanggal","Keterangan","Masuk","Keluar","Saldo"]],
 body:rows,
 styles:{fontSize:9},
-headStyles:{fillColor:[47,128,237]},
-columnStyles:{
-2:{halign:"right"},
-3:{halign:"right"},
-4:{halign:"right"}
-}
+headStyles:{fillColor:[47,128,237]}
 });
 
 let y = doc.lastAutoTable.finalY + 10;
@@ -396,11 +397,6 @@ doc.text("Total Pengeluaran : Rp "+totalKeluar.toLocaleString("id-ID"),14,y+6);
 let saldo = totalMasuk-totalKeluar;
 
 doc.text("Saldo Akhir : Rp "+saldo.toLocaleString("id-ID"),14,y+12);
-
-
-// =============================
-// BAGIAN TANDA TANGAN
-// =============================
 
 let ttdY = y + 30;
 let pageWidth = doc.internal.pageSize.getWidth();
@@ -414,7 +410,6 @@ doc.text("(Muhammad Zainudin)",14,ttdY+40);
 
 doc.text("Bendahara RT 07",pageWidth-14,ttdY+20,{align:"right"});
 doc.text("(Abdul Goni)",pageWidth-14,ttdY+40,{align:"right"});
-
 
 doc.save("Laporan_Kas_RT07.pdf");
 
