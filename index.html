@@ -298,15 +298,28 @@ type:"doughnut",
 
 data:{
 labels:["Masuk","Keluar"],
-datasets:[{data:[masukTotal,keluarTotal]}]
+datasets:[{
+data:[masukTotal,keluarTotal],
+backgroundColor:["#27ae60","#e74c3c"]
+}]
+},
+
+options:{
+plugins:{
+title:{
+display:true,
+text:"Grafik Pemasukan vs Pengeluaran",
+font:{
+size:18
+}
+},
+legend:{
+position:"bottom"
+}
+}
 }
 
 });
-
-});
-
-}
-
 function simpan(){
 
 let sheet=document.getElementById("sheet").value;
