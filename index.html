@@ -286,40 +286,22 @@ html+=`<tr>
 
 });
 
-document.getElementById("tabel").innerHTML=html;
-
-document.getElementById("saldo").innerHTML="Saldo : "+rupiah(masukTotal-keluarTotal);
-
-if(chart) chart.destroy();
-
-chart=new Chart(document.getElementById("chart"),{
-
-type:"doughnut",
-
-data:{
-labels:["Masuk","Keluar"],
-datasets:[{
-data:[masukTotal,keluarTotal],
-backgroundColor:["#27ae60","#e74c3c"]
-}]
-},
-
-options:{
-plugins:{
-title:{
-display:true,
-text:"Grafik Pemasukan vs Pengeluaran",
-font:{
-size:18
-}
-},
-legend:{
-position:"bottom"
-}
-}
+document.getElementById("tabelKas").innerHTML=html;
+    document.getElementById("saldo").innerHTML="Saldo : "+rupiah(totalMasuk-totalKeluar);
+    grafik(totalMasuk,totalKeluar);
+  });
 }
 
-});
+function grafik(masuk,keluar){
+  if(chart) chart.destroy();
+  chart=new Chart(document.getElementById("chartKas"),{
+    type:"doughnut",
+    data:{
+      labels:["Pemasukan","Pengeluaran"],
+      datasets:[{data:[masuk,keluar]}]
+    }
+  });
+}
 function simpan(){
 
 let sheet=document.getElementById("sheet").value;
