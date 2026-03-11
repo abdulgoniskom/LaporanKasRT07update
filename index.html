@@ -294,20 +294,31 @@ document.getElementById("saldo").innerHTML="Saldo : "+rupiah(masukTotal-keluarTo
 
 if(chart) chart.destroy();
 
-chart=new Chart(document.getElementById("chart"),{
+chart = new Chart(document.getElementById("chart"), {
 
-type:"doughnut",
+type: "doughnut",
 
-data:{
-labels:["Masuk","Keluar"],
-datasets:[{data:[masukTotal,keluarTotal]}]
+data: {
+labels: ["Masuk","Keluar"],
+datasets: [{
+data: [masukTotal, keluarTotal],
+backgroundColor:["#27ae60","#e74c3c"]
+}]
+},
+
+options: {
+plugins: {
+title: {
+display: true,
+text: "Grafik Pemasukan vs Pengeluaran"
+},
+legend: {
+position: "bottom"
+}
+}
 }
 
-});
-
-});
-}  
-function simpan(){
+});function simpan(){
 
 let sheet=document.getElementById("sheet").value;
 
